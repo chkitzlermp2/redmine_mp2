@@ -1,0 +1,48 @@
+<%# mp2 two-column attributes with a collapsible "additional info" section. %>
+<%# Injected via the view_issues_show_details_bottom hook. Which fields go %>
+<%# right (collapsible) vs left is controlled by the plugin setting %>
+<%# "right_fields" (see plugin settings). %>
+<%
+  # Helper: place an internal field left or right based on the setting.
+  place = lambda do |rows, key, label, value, css|
+    if RedmineMp2::FieldConfig.right?(key)
+      rows.right label, value, :class => css
+    else
+      rows.left label, value, :class => css
+    end
+  end
+%>
+<div class="mp2-attributes">
+<%= issue_fields_rows_mp2 do |rows|
+  place.call(rows, 'status_id', l(:field_status), issue.status.name, 'status')
+
+  unless issue.disabled_core_fields.include?('priority_id')
+    place.call(rows, 'priority_id', l(:field_priority), issue.priority.name, 'priority')
+  end
+  unless issue.disabled_core_fields.include?('assigned_to_id')
+    place.call(rows, 'assigned_to_id', l(:field_assigned_to), (issue.assigned_to ? link_to_principal(issue.assigned_to) : "-"), 'assigned-to')
+  end
+  unless issue.disabled_core_fields.include?('category_id') || (issue.category.nil? && issue.project.issue_categories.none?)
+    place.call(rows, 'category_id', l(:field_category), (issue.category ? issue.category.name : "-"), 'category')
+  end
+  unless issue.disabled_core_fields.include?('fixed_version_id') || (issue.fixed_version.nil? && issue.assignable_versions.none?)
+    place.call(rows, 'fixed_version_id', l(:field_fixed_version), (issue.fixed_version ? link_to_version(issue.fixed_version) : "-"), 'fixed-version')
+  end
+  unless issue.disabled_core_fields.include?('start_date')
+    place.call(rows, 'start_date', l(:field_start_date), format_date(issue.start_date), 'start-date')
+  end
+  unless issue.disabled_core_fields.include?('due_date')
+    place.call(rows, 'due_date', l(:field_due_date), issue_due_date_details(issue), 'due-date')
+  end
+  unless issue.disabled_core_fields.include?('done_ratio')
+    place.call(rows, 'done_ratio', l(:field_done_ratio), progress_bar(issue.done_ratio, :legend => "#{issue.done_ratio}%"), 'progress')
+  end
+  unless issue.disabled_core_fields.include?('estimated_hours')
+    place.call(rows, 'estimated_hours', l(:field_estimated_hours), issue_estimated_hours_details(issue), 'estimated-hours')
+  end
+  if User.current.allowed_to?(:view_time_entries, issue.project) && issue.total_spent_hours > 0
+    rows.right l(:label_spent_time), issue_spent_hours_details(issue), :class => 'spent-time'
+  end
+  render_half_width_custom_fields_rows_mp2(issue, rows)
+end %>
+</div>

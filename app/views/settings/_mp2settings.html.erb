@@ -1,0 +1,47 @@
+<%
+  right_keys = Array(@settings[:right_fields]).reject(&:blank?)
+%>
+
+<div class="box tabular settings">
+  <p>
+    <%= content_tag(:label, l(:label_darkmode)) %>
+    <%= check_box_tag 'settings[darkmode]', 1, @settings[:darkmode].to_s == '1' %>
+    <em class="info"><%= l(:label_darkmode_info) %></em>
+  </p>
+</div>
+
+<fieldset class="box">
+  <legend><%= l(:label_mp2_right_fields) %></legend>
+  <p class="info"><%= l(:label_mp2_right_fields_info) %></p>
+
+  <%# Hidden field guarantees the param is submitted even if nothing is checked,
+      so unchecking the last box actually clears the setting. %>
+  <%= hidden_field_tag 'settings[right_fields][]', '' %>
+
+  <div class="splitcontent">
+    <div class="splitcontentleft">
+      <h3><%= l(:label_mp2_internal_fields) %></h3>
+      <% RedmineMp2::FieldConfig::INTERNAL_FIELDS.each do |key, label_key| %>
+        <p>
+          <label>
+            <%= check_box_tag 'settings[right_fields][]', key, right_keys.include?(key), :id => "mp2_rf_#{key}" %>
+            <%= l(label_key) %>
+          </label>
+        </p>
+      <% end %>
+    </div>
+
+    <div class="splitcontentright">
+      <h3><%= l(:label_mp2_custom_fields) %></h3>
+      <% RedmineMp2::FieldConfig.issue_custom_fields.each do |cf| %>
+        <% key = RedmineMp2::FieldConfig.cf_key(cf) %>
+        <p>
+          <label>
+            <%= check_box_tag 'settings[right_fields][]', key, right_keys.include?(key), :id => "mp2_rf_#{key}" %>
+            <%= cf.name %>
+          </label>
+        </p>
+      <% end %>
+    </div>
+  </div>
+</fieldset>

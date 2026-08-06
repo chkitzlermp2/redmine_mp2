@@ -1,0 +1,52 @@
+<%# mp2 phase/state overview, inserted before the Tickets box on the project %>
+<%# overview via Deface (see app/overrides/projects/show/). Uses controller %>
+<%# instance vars set by ProjectsControllerPatch, so no locals are needed. %>
+<%# Columns map to IssueStatus IDs: reported=1, in_progress=8, %>
+<%# in_examination(customer)=10, feedback=13, completed=12. %>
+<% mp2_trackers = @trackers %>
+<% mp2_state_counts = @open_issues_by_state %>
+<% if @project && mp2_trackers.present? && mp2_state_counts.present? && User.current.allowed_to?(:view_issues, @project) %>
+<div class="mp2-phase-overview">
+  <div class="issues box">
+    <h3 class="icon icon-issue">
+      <%= l(:label_mp2_state) %>&nbsp;
+      <%= link_to l(:label_details),
+            project_issues_report_details_path(@project, :detail => 'tracker'),
+            :class => 'icon-only icon-zoom-in',
+            :title => l(:label_details) %>
+    </h3>
+    <table class="list issue-report">
+      <thead>
+        <tr>
+          <th></th>
+          <th colspan="5"><%= l(:label_mp2_phase_2) %></th>
+        </tr>
+        <tr>
+          <th></th>
+          <th><%= l(:label_mp2_reported) %></th>
+          <th><%= l(:label_mp2_in_progress) %></th>
+          <th><%= l(:label_mp2_in_examination_mp2) %></th>
+          <th><%= l(:label_mp2_feedback) %></th>
+          <th><%= l(:label_mp2_completed) %></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% mp2_trackers.each do |tracker| %>
+          <tr class="<%= cycle('odd', 'even') %>">
+            <td class="name">
+              <%= link_to tracker.name, project_issues_path(@project, :set_filter => 1, :tracker_id => tracker.id) %>
+            </td>
+            <% [1, 8, 10, 13, 12].each do |sid| %>
+              <td>
+                <%= link_to (mp2_state_counts[sid] || {})[tracker].to_i,
+                      project_issues_path(@project, :set_filter => 1,
+                        :tracker_id => tracker.id, :status_id => sid) %>
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+<% end %>

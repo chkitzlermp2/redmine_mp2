@@ -1,0 +1,26 @@
+# English strings
+en:
+  label_mp2_phase_1: Plan
+  label_mp2_phase_2: Do
+  label_mp2_phase_3: Closed
+  label_mp2_state: State
+  label_mp2_reported: Reported
+  label_mp2_next_meeting: Next Meeting
+  label_mp2_processing_customer: In Work Customer
+  label_mp2_offered: Offered
+  label_mp2_adopted: Adopted
+  label_mp2_in_examination_mp2: In Test MP2
+  label_mp2_in_test_test: In Test
+  label_mp2_released: Released
+  label_mp2_in_progress: In Progress
+  label_mp2_feedback: Feedback
+  label_mp2_shifted_on_indefinite: Shifted
+  label_mp2_rejected: Rejected
+  label_mp2_completed: Completed
+  label_darkmode: Customer Mode
+  label_darkmode_info: Hides MP2-specific informationen (offered hours, ...). For customer meetings.
+  label_mp2_additional_info: Additional Information
+  label_mp2_right_fields: Collapsible fields (Additional Information)
+  label_mp2_right_fields_info: Checked fields appear in the right, collapsible "Additional Information" column – both on the issue view and in the edit form. Unchecked fields stay in the always-visible left column.
+  label_mp2_internal_fields: Internal fields
+  label_mp2_custom_fields: Custom fields

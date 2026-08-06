@@ -1,0 +1,175 @@
+/* --------------------------------------------------------------------------
+   mp2 issue attributes: two-column layout with a collapsible right column.
+
+   The core Redmine issues/show view renders its attributes inside
+   <div class="attributes">. Our hook appends <div class="mp2-attributes">
+   as the LAST child of that container. We hide every OTHER child of
+   div.attributes (the stock rows + core half-width custom fields) and show
+   only our block. No core template is overridden.
+   -------------------------------------------------------------------------- */
+
+/* Hide the stock attribute rows (core renders them as .splitcontent inside
+   div.attributes) but keep our injected .mp2-attributes visible.
+
+   IMPORTANT: scope this to containers that actually hold our .mp2-attributes
+   block (the issue SHOW page). The issue EDIT form also renders its fields in
+   div.attributes > .splitcontent; without :has() the rule would hide the edit
+   form too, making "Assignee" and the additional-info fields disappear while
+   editing. :has() ensures we only hide the core rows when our block is present. */
+div.attributes:has(> .mp2-attributes) > .splitcontent {
+  display: none !important;
+}
+div.attributes > .mp2-attributes {
+  display: block;
+}
+
+/* Two-column split. Own class names + !important so we don't fight or
+   inherit core .splitcontent / .detailsCollapsed rules. */
+.mp2-attributes .mp2-split {
+  display: flex !important;
+  gap: 1.5em;
+  align-items: flex-start;
+}
+.mp2-attributes .mp2-col {
+  flex: 1 1 50%;
+  min-width: 0;
+  float: none !important; /* neutralize any inherited float */
+}
+
+/* Attribute rows. */
+.mp2-attributes .attribute {
+  padding: 2px 0;
+  line-height: 1.5em;
+}
+.mp2-attributes .attribute > .label {
+  display: inline-block;
+  width: 40%;
+  font-weight: bold;
+  vertical-align: top;
+}
+.mp2-attributes .attribute > .value {
+  display: inline-block;
+  width: 59%;
+  vertical-align: top;
+}
+
+/* Toggle links for the right column. */
+.mp2-attributes .mp2-toggle {
+  display: inline-block;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+  cursor: pointer;
+}
+
+/* Disclosure arrow before the toggle label. Collapsed = ▸, expanded = ▾. */
+.mp2-attributes .mp2-toggle::before {
+  content: "\25B8"; /* ▸ right-pointing triangle */
+  display: inline-block;
+  margin-right: 0.4em;
+  font-size: 0.9em;
+}
+.mp2-attributes .mp2-col-right.mp2-expanded .mp2-toggle::before {
+  content: "\25BE"; /* ▾ down-pointing triangle */
+}
+
+/* DEFAULT = collapsed: details hidden, "show" link visible, "hide" link off.
+   This is the state before JS runs too, so there is no expand-then-collapse
+   flash on load. mp2.js adds .mp2-expanded to open it. */
+.mp2-attributes .mp2-toggle-hide { display: none; }
+.mp2-attributes .mp2-toggle-show { display: inline-block; }
+.mp2-attributes .mp2-details     { display: none !important; }
+
+/* Expanded state (mp2.js toggles .mp2-expanded on .mp2-col-right). */
+.mp2-attributes .mp2-col-right.mp2-expanded .mp2-toggle-hide { display: inline-block; }
+.mp2-attributes .mp2-col-right.mp2-expanded .mp2-toggle-show { display: none; }
+.mp2-attributes .mp2-col-right.mp2-expanded .mp2-details     { display: block !important; }
+
+/* --------------------------------------------------------------------------
+   Customer mode ("darkmode" setting): hide mp2-internal figures such as
+   estimated/offered hours during customer meetings. Controlled by a body
+   class set in mp2.js from the plugin setting.
+   -------------------------------------------------------------------------- */
+body.mp2-customer-mode .mp2-attributes .estimated-hours,
+body.mp2-customer-mode .mp2-attributes .spent-time {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   mp2 footer (injected via view_layouts_base_body_bottom).
+   -------------------------------------------------------------------------- */
+.mp2-footer {
+  margin-top: 2em;
+  padding: 1em 0;
+  border-top: 1px solid #ddd;
+  text-align: center;
+  font-size: 0.9em;
+  color: #666;
+}
+.mp2-footer a { color: #666; }
+
+/* --------------------------------------------------------------------------
+   mp2 phase overview table on the project overview (view_layouts_base_content).
+   Sits above the stock issue-tracking box.
+   -------------------------------------------------------------------------- */
+.mp2-phase-overview {
+  margin-bottom: 1em;
+}
+.mp2-phase-overview .issue-report th,
+.mp2-phase-overview .issue-report td {
+  text-align: center;
+}
+.mp2-phase-overview .issue-report td.name {
+  text-align: left;
+}
+
+/* --------------------------------------------------------------------------
+   mp2 welcome banner (view_layouts_base_content on the home page).
+   NOTE: background images for .main_banner_1 / .main_banner_2 must be
+   provided separately (theme or plugin assets). Adjust paths/heights here.
+   -------------------------------------------------------------------------- */
+.mp2-banner {
+  display: flex;
+  gap: 1em;
+  margin-bottom: 1em;
+}
+.mp2-banner .main_banner_1,
+.mp2-banner .main_banner_2 {
+  display: block;
+  flex: 1 1 50%;
+  min-height: 120px;
+  background-size: cover;
+  background-position: center;
+}
+
+/* --------------------------------------------------------------------------
+   Edit form: collapsible "Zusätzliche Informationen" block in the right
+   column, mirroring the show page. Fields are moved here by mp2.js based on
+   the plugin's field configuration.
+   -------------------------------------------------------------------------- */
+.mp2-edit-additional .mp2-toggle,
+.mp2-edit-additional .mp2-toggle:link,
+.mp2-edit-additional .mp2-toggle:visited {
+  display: inline-block;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+  cursor: pointer;
+  /* The edit form renders this near-white and unreadable. Force the same
+     blue as normal Redmine links / the view-mode toggle. */
+  color: #2a5b8c !important;
+}
+.mp2-edit-additional .mp2-toggle:hover {
+  text-decoration: underline;
+}
+.mp2-edit-additional .mp2-toggle::before {
+  content: "\25B8"; /* collapsed: right triangle */
+  display: inline-block;
+  margin-right: 0.4em;
+  font-size: 0.9em;
+}
+.mp2-edit-additional.mp2-expanded .mp2-toggle::before {
+  content: "\25BE"; /* expanded: down triangle */
+}
+
+/* Collapsed by default (before JS/CSS class), expanded via .mp2-expanded. */
+.mp2-edit-additional .mp2-details { display: none; }
+.mp2-edit-additional.mp2-expanded .mp2-details { display: block; }

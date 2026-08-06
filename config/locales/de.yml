@@ -1,0 +1,26 @@
+# German strings
+de:
+  label_mp2_phase_1: Planungsphase
+  label_mp2_phase_2: Ticketphase
+  label_mp2_phase_3: Nachverfolgung
+  label_mp2_state: Status
+  label_mp2_reported: Gemeldet
+  label_mp2_next_meeting: Besprechung
+  label_mp2_processing_customer: Bearb. Kunde
+  label_mp2_offered: Angeboten
+  label_mp2_adopted: Angenommen
+  label_mp2_in_examination_mp2: Bearb. Kunde
+  label_mp2_in_test_test: Prüfung Test
+  label_mp2_released: Freigegeben
+  label_mp2_in_progress: Bearb. MP2
+  label_mp2_feedback: Feedback
+  label_mp2_shifted_on_indefinite: Verschoben
+  label_mp2_rejected: Abgewiesen
+  label_mp2_completed: Abgeschlossen
+  label_darkmode: Kundenmodus
+  label_darkmode_info: Blendet MP2-spezifische Informationen (Angebotene Stunden, ...) aus. Für Kundengespräche.
+  label_mp2_additional_info: Zusätzliche Informationen
+  label_mp2_right_fields: Einklappbare Felder (Zusätzliche Informationen)
+  label_mp2_right_fields_info: Angehakte Felder erscheinen in der rechten, einklappbaren Spalte „Zusätzliche Informationen" – in der Ticket-Ansicht und im Bearbeiten-Formular. Nicht angehakte Felder bleiben links immer sichtbar.
+  label_mp2_internal_fields: Interne Felder
+  label_mp2_custom_fields: Benutzerdefinierte Felder

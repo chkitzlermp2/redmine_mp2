@@ -14,6 +14,19 @@
 %>
 <div class="mp2-attributes">
 <%= issue_fields_rows_mp2 do |rows|
+  # === MP2-DIAGNOSE – nach der Auswertung wieder entfernen ==================
+  # Zeigt alle Werte, an denen "Geschätzter Aufwand" und "Aufgewendete Zeit"
+  # haengen. Erscheint diese Zeile NICHT, laeuft im Container eine aeltere
+  # Fassung dieser Datei.
+  rows.left 'MP2-DIAGNOSE',
+            "build=2.1.0 | " \
+            "est_disabled=#{issue.disabled_core_fields.include?('estimated_hours')} | " \
+            "est=#{issue.estimated_hours.inspect} total_est=#{issue.total_estimated_hours.inspect} | " \
+            "spent=#{issue.spent_hours} total_spent=#{issue.total_spent_hours} | " \
+            "perm=#{User.current.allowed_to?(:view_time_entries, issue.project)} | " \
+            "right_fields=#{RedmineMp2::FieldConfig.right_field_keys.inspect}"
+  # === Ende Diagnose ========================================================
+
   place.call(rows, 'status_id', l(:field_status), issue.status.name, 'status')
 
   unless issue.disabled_core_fields.include?('priority_id')

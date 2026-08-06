@@ -5,7 +5,7 @@ Redmine::Plugin.register :redmine_mp2 do
   name 'Redmine MP2 Plugin'
   author 'Christoph Kitzler'
   description 'Changes for MP2 Dev Team'
-  version '2.0.0'
+  version '2.1.0'
   url 'http://www.mp2.at'
   author_url 'http://www.mp2.at'
 

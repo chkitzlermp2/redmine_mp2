@@ -20,7 +20,11 @@ module RedmineMp2
       ['start_date',       :field_start_date],
       ['due_date',         :field_due_date],
       ['estimated_hours',  :field_estimated_hours],
-      ['done_ratio',       :field_done_ratio]
+      ['done_ratio',       :field_done_ratio],
+      # Display-only: there is no input for spent time in the issue form, so
+      # this key only affects the show view. The edit-form JS looks the field
+      # up and skips it when not found, so listing it here is harmless.
+      ['spent_time',       :label_spent_time]
     ].freeze
 
     module_function

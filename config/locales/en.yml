@@ -24,3 +24,6 @@ en:
   label_mp2_right_fields_info: Checked fields appear in the right, collapsible "Additional Information" column – both on the issue view and in the edit form. Unchecked fields stay in the always-visible left column.
   label_mp2_internal_fields: Internal fields
   label_mp2_custom_fields: Custom fields
+  label_mp2_offering: Offering
+  label_mp2_deploy: Deploy
+  label_mp2_in_test_live: In Test Live

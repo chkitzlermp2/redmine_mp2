@@ -9,7 +9,7 @@ de:
   label_mp2_processing_customer: Bearb. Kunde
   label_mp2_offered: Angeboten
   label_mp2_adopted: Angenommen
-  label_mp2_in_examination_mp2: Bearb. Kunde
+  label_mp2_in_examination_mp2: Prüfung (MP2)
   label_mp2_in_test_test: Prüfung Test
   label_mp2_released: Freigegeben
   label_mp2_in_progress: Bearb. MP2
@@ -24,3 +24,6 @@ de:
   label_mp2_right_fields_info: Angehakte Felder erscheinen in der rechten, einklappbaren Spalte „Zusätzliche Informationen" – in der Ticket-Ansicht und im Bearbeiten-Formular. Nicht angehakte Felder bleiben links immer sichtbar.
   label_mp2_internal_fields: Interne Felder
   label_mp2_custom_fields: Benutzerdefinierte Felder
+  label_mp2_offering: Anzubieten
+  label_mp2_deploy: Deploy
+  label_mp2_in_test_live: Prüfung Live

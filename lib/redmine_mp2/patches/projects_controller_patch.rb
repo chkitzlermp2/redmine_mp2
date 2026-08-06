@@ -5,8 +5,9 @@ module RedmineMp2
   module Patches
     module ProjectsControllerPatch
       # mp2 workflow status IDs shown in the phase overview table.
-      # Central definition — adjust here if your IssueStatus IDs change.
-      PHASE_STATUS_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].freeze
+      # These match the Redmine instance's status set (16 columns across three
+      # phases). Central definition — adjust here if your IssueStatus IDs change.
+      PHASE_STATUS_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17].freeze
 
       def show
         super

@@ -24,10 +24,17 @@ Redmine::Plugin.register :redmine_mp2 do
   
   settings(default: default_settings, partial: 'settings/mp2settings')
 
-  # Top menu entry "Meine Tickets" (merged in from the former
-  # redmine_mp2_topbar plugin). Links to a saved query. The query id is
-  # environment-specific — adjust query_id if it differs in your Redmine.
-  menu :top_menu, :mytickets, '/issues?query_id=68', caption: 'Meine Tickets'
+  # Top menu customizations (merged in from the former redmine_mp2_topbar
+  # plugin, Redmine-instance variant).
+  # Added entries: Kanban board and a specific wiki page.
+  menu :top_menu, :kanban, '/projects/mp2-kunden/agile/board', :caption => 'Kanban'
+  menu :top_menu, :wiki, '/projects/mp2-kunden/wiki/MP2Infomed', :caption => 'Wiki'
+
+  # Removed entries.
+  delete_menu_item :top_menu, :my_page
+  delete_menu_item :top_menu, :easy_gantt
+  delete_menu_item :application_menu, :time_entries
+  delete_menu_item :project_menu, :time_entries
 end
 
 class RedmineMP2Helper

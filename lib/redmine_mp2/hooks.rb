@@ -2,6 +2,10 @@ module RedmineMp2
   # View hooks. These inject mp2 markup into the stock Redmine views
   # WITHOUT replacing any core template, so the plugin survives upgrades.
   class Hooks < Redmine::Hook::ViewListener
+    # Role that must not see the "Zusammenfassung" (issues report) links on
+    # the project overview. Matched by name; change here if renamed.
+    SUMMARY_HIDDEN_ROLE_NAME = 'Reporter'.freeze
+
     # Rendered INSIDE core's <div class="attributes"> (issues/show),
     # right before the closing tag. We hide the core rows via CSS and
     # show our own two-column, collapsible block instead.
@@ -67,9 +71,54 @@ module RedmineMp2
           out << controller.send(:render_to_string,
             partial: 'projects/mp2_phase_overview')
         end
+
+        # Hide "Zusammenfassung" for reporter-only users (see method below).
+        out << mp2_hide_issue_summary_script if mp2_hide_issue_summary?(project)
       end
 
       out.html_safe
+    end
+
+    private
+
+    # Redmine has no separate permission for the issues report: anyone with
+    # :view_issues sees the "Zusammenfassung" link. So the decision is made
+    # here by role.
+    #
+    # Hidden only if the user's roles in this project are ALL the reporter
+    # role. Anyone with an additional role (e.g. developer) keeps the link;
+    # admins always keep it.
+    #
+    # NOTE: This only hides the links. /projects/<id>/issues/report stays
+    # reachable by URL. Blocking it would need a ReportsController patch.
+    def mp2_hide_issue_summary?(project)
+      user = User.current
+      return false if project.nil? || !user.logged? || user.admin?
+
+      roles = user.roles_for_project(project)
+      roles.any? && roles.all? { |r| r.name == SUMMARY_HIDDEN_ROLE_NAME }
+    end
+
+    # Removes every link to .../issues/report inside #content: the one in
+    # core's issues box (projects/show.html.erb: "| <%= link_to
+    # l(:field_summary), project_issues_report_path(@project) %>") and the one
+    # in the mp2 phase overview. The "|" in front is a plain text node and is
+    # trimmed too, so "Alle Tickets anzeigen" does not end with a dangling
+    # separator.
+    # $= "/issues/report" matches only the summary itself, not the detail
+    # reports (/issues/report/tracker etc.).
+    def mp2_hide_issue_summary_script
+      javascript_tag(<<~JS)
+        document.addEventListener('DOMContentLoaded', function () {
+          document.querySelectorAll('#content a[href$="/issues/report"]').forEach(function (a) {
+            var prev = a.previousSibling;
+            if (prev && prev.nodeType === 3) {
+              prev.textContent = prev.textContent.replace(/\\|\\s*$/, '');
+            }
+            a.remove();
+          });
+        });
+      JS
     end
   end
 end

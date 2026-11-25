@@ -79,8 +79,13 @@
     var form = root.querySelector('#issue-form');
     if (!form) { return; }
 
-    var leftCol = form.querySelector('.splitcontentleft');
-    var rightCol = form.querySelector('.splitcontentright');
+    // Use the columns of core's attribute block (#attributes). Other plugins
+    // render their own .splitcontent earlier in the form (e.g. Helpdesk's
+    // e-mail block on new issues) - taking the first one in the form moved
+    // status/priority etc. up into that block.
+    var scope = form.querySelector('#attributes') || form;
+    var leftCol = scope.querySelector('.splitcontentleft');
+    var rightCol = scope.querySelector('.splitcontentright');
     if (!leftCol || !rightCol) { return; }
 
     var rightKeys = mp2RightFields();
@@ -157,43 +162,17 @@
     }
   }
 
-  // When Redmine reloads the issue form via Ajax (status/tracker/project
-  // change -> updateIssueFrom), it REPLACES the attributes HTML, so our
-  // left/right arrangement is lost. Redmine 7 does this via fetch, not the old
-  // rails-ujs 'ajax:complete' event, so instead of listening for that we watch
-  // the form region with a MutationObserver and re-arrange whenever it changes.
-  var mp2Rearranging = false;
-  function watchIssueForm() {
-    var container = document.getElementById('issue-form') ||
-                    document.getElementById('content');
-    if (!container) { return; }
-
-    var scheduled = false;
-    var observer = new MutationObserver(function () {
-      // Ignore mutations we caused ourselves (moving fields around), and
-      // debounce the many mutations an Ajax swap produces into one call.
-      if (mp2Rearranging || scheduled) { return; }
-      scheduled = true;
-      setTimeout(function () {
-        scheduled = false;
-        mp2Rearranging = true;
-        try {
-          arrangeEditForm();
-        } finally {
-          mp2Rearranging = false;
-        }
-      }, 50);
-    });
-    observer.observe(container, { childList: true, subtree: true });
-  }
-
   function init() {
     initCollapse();
     initCustomerMode();
     arrangeEditForm();
     arrangeProjectOverview();
-    watchIssueForm();
   }
+
+  // Re-run after Redmine refreshes the issue form via ajax.
+  document.addEventListener('ajax:complete', function () {
+    arrangeEditForm();
+  });
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
